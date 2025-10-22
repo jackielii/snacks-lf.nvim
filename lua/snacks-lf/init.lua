@@ -9,7 +9,7 @@ M.config = {
   height = 0.9,
   title = "Lf",
   opener = "edit",
-  lf_command = "map l open;map o ${{open $f}};set sortby name;set noreverse",
+  lf_command = "set mouse;map e open;map l open;map o ${{open $f}};set sortby name;set noreverse",
   -- Terminal behavior
   auto_insert = true,
   start_insert = true,
@@ -86,6 +86,7 @@ function M.open(opts)
     auto_close = false, -- We handle closing ourselves after file selection
     env = env,
     win = {
+      style = "lazygit",
       position = opts.position,
       width = opts.width,
       height = opts.height,
