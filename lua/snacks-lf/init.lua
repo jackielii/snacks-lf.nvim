@@ -22,6 +22,8 @@ M.config = {
   },
   -- Whether to cleanup buffers for renamed files
   cleanup_renamed = true,
+  -- Key to send on resize (default: Ctrl-L, set to "" to disable)
+  resize_key = "\x0c",
 }
 
 local function augroup(name)
@@ -40,6 +42,8 @@ end
 ---@field position? string Terminal position ("float", "bottom", "top", "left", "right")
 ---@field maps? table<string, string> Keybindings for opening files (e.g., {["<C-t>"] = "tabedit"})
 ---@field cleanup_renamed? boolean Whether to cleanup buffers for renamed files
+---@field resize_key? string Key to send on resize (default: "\x0c" for Ctrl-L, empty string to disable)
+---@field env? table<string, string> Environment variables to pass to terminal (TERM auto-added)
 
 --- Setup function for lazy.nvim
 ---@param opts? snacks-lf.Config User configuration options
@@ -69,10 +73,18 @@ function M.open(opts)
     fn
   )
 
+  -- Set up environment variables for terminal
+  local env = opts.env or {}
+  env.LF_NVIM_TERMINAL = "1" -- Signal to preview script that we're in Neovim
+  if vim.env.TERM and not env.TERM then
+    env.TERM = vim.env.TERM
+  end
+
   local term = Snacks.terminal.toggle(lf_cmd, {
     auto_insert = opts.auto_insert,
     start_insert = opts.start_insert,
     auto_close = false, -- We handle closing ourselves after file selection
+    env = env,
     win = {
       position = opts.position,
       width = opts.width,
@@ -163,6 +175,22 @@ function M.open(opts)
                       vim.notify("Error deleting buffer: " .. msg, vim.log.levels.WARN)
                     end
                   end
+                end
+              end)
+            end,
+          })
+        end
+
+        -- Handle terminal resize
+        if opts.resize_key and opts.resize_key ~= "" then
+          vim.api.nvim_create_autocmd("VimResized", {
+            buffer = self.buf,
+            group = augroup("resize_" .. self.buf),
+            callback = function()
+              vim.schedule(function()
+                if self:buf_valid() and self:win_valid() then
+                  -- Send configured key to trigger recalculation
+                  vim.api.nvim_chan_send(vim.bo[self.buf].channel, opts.resize_key)
                 end
               end)
             end,

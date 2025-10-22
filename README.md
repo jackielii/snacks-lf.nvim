@@ -12,6 +12,7 @@ A Neovim plugin that integrates [lf](https://github.com/gokcehan/lf) file manage
 - 📂 Opens current file location or working directory
 - 🔄 Handles file renames and buffer cleanup
 - 🎨 Configurable window size and opener modes
+- 📐 Auto-resize handling for terminal window changes
 
 ## Requirements
 
@@ -85,6 +86,7 @@ Configure defaults using the `opts` table in lazy.nvim:
     auto_insert = true,       -- Start insert mode when entering terminal (default: true)
     start_insert = true,      -- Start insert mode when terminal starts (default: true)
     cleanup_renamed = true,   -- Cleanup buffers for renamed files (default: true)
+    resize_key = "\x0c",      -- Key to send on resize (default: "\x0c" = Ctrl-L, "" to disable)
 
     -- Lf configuration
     lf_command = "map l open;map o ${{open $f}};set sortby name;set noreverse",
@@ -152,6 +154,16 @@ opts = {
 }
 ```
 
+#### Customize auto-resize key
+
+```lua
+opts = {
+  resize_key = "R",  -- Send 'R' key on resize (if you have it mapped to recol in lfrc)
+  -- or
+  resize_key = "",   -- Disable auto-resize completely
+}
+```
+
 ## API
 
 ### `require("snacks-lf").setup(opts)`
@@ -181,6 +193,8 @@ Opens lf file manager in a terminal.
 - `lf_command` - Custom lf configuration
 - `maps` - Keybindings for open modes
 - `cleanup_renamed` - Whether to cleanup renamed file buffers
+- `resize_key` - Key to send on terminal resize (default: "\x0c" = Ctrl-L, empty to disable)
+- `env` - Environment variables to pass to terminal (TERM auto-added)
 
 ### `require("snacks-lf").toggle(opts)`
 
