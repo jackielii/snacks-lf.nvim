@@ -1,5 +1,8 @@
 # snacks-lf.nvim
 
+[![Neovim](https://img.shields.io/badge/Neovim-0.9+-green.svg?style=flat-square&logo=neovim)](https://neovim.io)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+
 A Neovim plugin that integrates [lf](https://github.com/gokcehan/lf) file manager with [snacks.nvim](https://github.com/folke/snacks.nvim) terminal.
 
 ## Features
@@ -22,7 +25,7 @@ A Neovim plugin that integrates [lf](https://github.com/gokcehan/lf) file manage
 
 ```lua
 {
-  dir = "~/personal/snacks-lf.nvim",
+  "jackielii/snacks-lf.nvim",
   dependencies = {
     "folke/snacks.nvim",
   },
@@ -67,7 +70,7 @@ Configure defaults using the `opts` table in lazy.nvim:
 
 ```lua
 {
-  dir = "~/personal/snacks-lf.nvim",
+  "jackielii/snacks-lf.nvim",
   dependencies = { "folke/snacks.nvim" },
   keys = { { "<leader>l", function() require("snacks-lf").toggle() end, desc = "Lf" } },
   opts = {
